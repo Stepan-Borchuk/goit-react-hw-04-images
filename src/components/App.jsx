@@ -5,6 +5,7 @@ import ImageGallery from './ImageGallery/ImageGallery';
 import Modal from './modal/Modal';
 import 'react-toastify/dist/ReactToastify.css';
 import fetchPictures from './service/fetchPixabay';
+import LoadMoreButton from './loadMore/LoadMoreButton';
 
 import SearchBar from './serchBar/Searchbar';
 import Loader from './loader/Loader';
@@ -87,6 +88,12 @@ class App extends Component {
     });
   };
 
+  loadMore = () => {
+    this.setState(prevState => ({
+      page: prevState.page + 1,
+    }));
+  };
+
   render() {
     const { images, status, selectedImg, alt, error } = this.state;
 
@@ -106,12 +113,12 @@ class App extends Component {
             {error.message}
           </h1>
         )}
-
         {images.length > 0 && (
           <ImageGallery images={images} selectedImg={this.handleSelectImg} />
         )}
-
-        {/* button */}
+        {images.length > 0 && images.length !== this.totalHits && (
+          <LoadMoreButton onClick={this.loadMore} />
+        )}
         {status === 'pending' && <Loader />}
       </AppStyle>
     );
