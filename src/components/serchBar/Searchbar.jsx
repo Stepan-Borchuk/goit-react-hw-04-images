@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
 import {
@@ -11,54 +11,46 @@ import {
 
 import { BsSearch } from 'react-icons/bs';
 
-class SearchBar extends Component {
-  state = {
-    searchQuery: '',
+export default function SearchBar({ onSubmit }) {
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleNameChange = e => {
+    setSearchQuery(e.currentTarget.value.toLowerCase());
   };
 
-  handleNameChange = e => {
-    this.setState({ searchQuery: e.currentTarget.value.toLowerCase() });
-  };
-
-  handleSearchSubmit = e => {
+  const handleSearchSubmit = e => {
     e.preventDefault();
 
-    if (this.state.searchQuery.trim() === '') {
+    if (searchQuery.trim() === '') {
       toast.error('Please enter something');
       return;
     }
 
-    this.props.onSubmit(this.state.searchQuery);
+    onSubmit(searchQuery);
 
-    this.setState({ searchQuery: '' });
+    setSearchQuery('');
   };
 
-  render() {
-    return (
-      <Searchbar>
-        <SearchForm onSubmit={this.handleSearchSubmit}>
-          <Input
-            type="text"
-            autocomplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-            name="searchQuery"
-            value={this.state.searchQuery}
-            onChange={this.handleNameChange}
-          />
-          <Button type="submit">
-            <BsSearch
-              style={{ width: '20px', height: '20px', color: 'blue' }}
-            />
-            <Label>Search</Label>
-          </Button>
-        </SearchForm>
-      </Searchbar>
-    );
-  }
+  return (
+    <Searchbar>
+      <SearchForm onSubmit={handleSearchSubmit}>
+        <Input
+          type="text"
+          autocomplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+          name="searchQuery"
+          value={searchQuery}
+          onChange={handleNameChange}
+        />
+        <Button type="submit">
+          <BsSearch style={{ width: '20px', height: '20px', color: 'blue' }} />
+          <Label>Search</Label>
+        </Button>
+      </SearchForm>
+    </Searchbar>
+  );
 }
-
-export default SearchBar;
 
 SearchBar.propTypes = {
   onSubmit: PropTypes.func,

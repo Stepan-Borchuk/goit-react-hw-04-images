@@ -1,39 +1,43 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { OverlayModal, ContainerModal } from './Modal.styled';
+import PropTypes from 'prop-types';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
+export default function Modal({ selectedImg, tags, onClose }) {
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  });
 
-  handleKeyDown = e => {
+  const handleKeyDown = e => {
     if (e.code === 'Escape') {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  handleBackDropClick = e => {
+  const handleBackDropClick = e => {
     if (e.currentTarget === e.target) {
-      this.props.onClose();
+      onClose();
     }
   };
 
-  render() {
-    const { selectedImg, tags } = this.props;
-    return createPortal(
-      <OverlayModal onClick={this.handleBackDropClick}>
-        <ContainerModal>
-          <img src={selectedImg} alt={tags} />
-        </ContainerModal>
-      </OverlayModal>,
-      modalRoot
-    );
-  }
+  return createPortal(
+    <OverlayModal onClick={handleBackDropClick}>
+      <ContainerModal>
+        <img src={selectedImg} alt={tags} />
+      </ContainerModal>
+    </OverlayModal>,
+    modalRoot
+  );
 }
+
+Modal.propTypes = {
+  selectedImg: PropTypes.string,
+  tags: PropTypes.string,
+  onClose: PropTypes.func,
+};
