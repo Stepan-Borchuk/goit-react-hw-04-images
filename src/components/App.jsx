@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { AppStyle } from './App.styled';
 import ImageGallery from './ImageGallery/ImageGallery';
-import Modal from './modal/Modal';
 import 'react-toastify/dist/ReactToastify.css';
 import fetchPictures from './service/fetchPixabay';
 import LoadMoreButton from './loadMore/LoadMoreButton';
@@ -16,8 +15,6 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [status, setStatus] = useState('idle');
   const [error, setError] = useState(null);
-  const [selectedImg, setSelectedImg] = useState(null);
-  const [alt, setAlt] = useState(null);
   const [totalHits, setTotalHits] = useState(null);
 
   useEffect(() => {
@@ -56,15 +53,6 @@ export default function App() {
     fetchImages();
   }, [page, searchQuery]);
 
-  const toggleModal = () => {
-    setSelectedImg(!selectedImg);
-  };
-
-  const handleSelectImg = (largeImageURL, tags) => {
-    setSelectedImg(largeImageURL);
-    setAlt(tags);
-  };
-
   const handleFormSubmit = query => {
     if (searchQuery === query) {
       return;
@@ -78,8 +66,7 @@ export default function App() {
     setPage(1);
     setStatus('idle');
     setError(null);
-    setSelectedImg(null);
-    setAlt(null);
+
     setTotalHits(null);
   };
 
@@ -89,9 +76,6 @@ export default function App() {
 
   return (
     <AppStyle>
-      {selectedImg && (
-        <Modal onClose={toggleModal} selectedImg={selectedImg} tags={alt} />
-      )}
       <SearchBar onSubmit={handleFormSubmit} />
       <ToastContainer autoClose={3000} theme="colored" pauseOnHover />
       {error && (
@@ -99,9 +83,7 @@ export default function App() {
           {error.message}
         </h1>
       )}
-      {images.length > 0 && (
-        <ImageGallery images={images} selectedImg={handleSelectImg} />
-      )}
+      {images.length > 0 && <ImageGallery images={images} />}
       {images.length > 0 && images.length !== totalHits && (
         <LoadMoreButton onClick={loadMore} />
       )}

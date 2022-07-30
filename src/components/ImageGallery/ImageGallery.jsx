@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { ImageList } from './ImageGallery.styled';
 import ImageGalleryItem from './ImageGalleryItem';
 
-function ImageGallery({ images, selectedImg }) {
+function ImageGallery({ images }) {
   return (
     <ImageList>
       {images.map(({ id, webformatURL, tags, largeImageURL }) => (
@@ -10,7 +10,7 @@ function ImageGallery({ images, selectedImg }) {
           key={id}
           previewImg={webformatURL}
           tags={tags}
-          selectedImg={() => selectedImg(largeImageURL, tags)}
+          largeImageURL={largeImageURL}
         />
       ))}
     </ImageList>
@@ -25,5 +25,4 @@ ImageGallery.propTypes = {
       id: PropTypes.number.isRequired,
     })
   ),
-  selectedImage: PropTypes.func,
 };
